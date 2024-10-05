@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Job;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -13,14 +14,9 @@ class JobController extends Controller
      */
     public function index(): View
     {
-        $jobs = [
-            'Software Engineer',
-            'Web Developer',
-            'Data Scientist',
-            'Systems Analyst'
-        ];
+        $jobs = Job::all();
 
-        return view('jobs.index', compact('jobs'));
+        return view('jobs.index')->with('jobs', $jobs);
     }
 
     /**
