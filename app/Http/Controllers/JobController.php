@@ -63,7 +63,7 @@ class JobController extends Controller
       // Submit to database
       Job::create($validatedData);
 
-      return redirect()->route('jobs.index')->with('success', "L'offre d'emploi a été créée avec succès !");
+      return redirect()->route('jobs.index')->with('success', 'Poste créé avec succès !');
     }
 
     /**
