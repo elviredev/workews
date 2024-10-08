@@ -6,6 +6,7 @@ use App\Models\Job;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Storage;
 
 class JobController extends Controller
 {
@@ -87,27 +88,71 @@ class JobController extends Controller
      * @desc Show the form for editing a job.
      * @route GET /jobs/{id}/edit
      */
-    public function edit(string $id): string
+    public function edit(Job $job): View
     {
-        return "Edit";
+        return view('jobs.edit')->with('job', $job);
     }
 
     /**
      * @desc Update a job.
      * @route PUT /jobs/{id}
      */
-    public function update(Request $request, string $id): string
+    public function update(Request $request, Job $job): RedirectResponse
     {
-        return "Update";
+      // Récupérer les données depuis les champs du form et les valider
+      $validatedData = $request->validate([
+        'title' => 'required|string|max:255',
+        'description' => 'required|string',
+        'salary' => 'required|integer',
+        'tags' => 'nullable|string',
+        'job_type' => 'required|string',
+        'remote' => 'required|boolean',
+        'requirements' => 'nullable|string',
+        'benefits' => 'nullable|string',
+        'address' => 'nullable|string',
+        'city' => 'required|string',
+        'state' => 'required|string',
+        'zipcode' => 'nullable|string',
+        'contact_email' => 'required|email',
+        'contact_phone' => 'nullable|string',
+        'company_name' => 'required|string',
+        'company_description' => 'nullable|string',
+        'company_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        'company_website' => 'nullable|url',
+      ]);
+
+      // Vérifier s'il existe un fichier téléchargé
+      if ($request->hasFile('company_logo')) {
+        if ($job->company_logo) {
+          // Delete the old company logo from storage
+          Storage::disk('public')->delete($job->company_logo);
+        }
+        // Stocker le fichier et obtenir le path pour le sauvegarder en bdd (storage/app/public/logos)
+        $path = $request->file('company_logo')->store('logos', 'public');
+        // Ajouter le path aux données validées
+        $validatedData['company_logo'] = $path;
+      }
+
+      // Update with the validated data
+      $job->update($validatedData);
+
+      return redirect()->route('jobs.index')->with('success', 'Poste modifié avec succès !');
     }
 
     /**
      * @desc Delete a job.
      * @route DELETE /jobs/{id}
      */
-    public function destroy(string $id): string
+    public function destroy(Job $job): RedirectResponse
     {
-        return 'Destroy';
+      // Si une image existe, la supprimer
+      if ($job->company_logo) {
+        Storage::disk('public')->delete($job->company_logo);
+      }
+      // Supprimer le poste
+      $job->delete();
+
+      return redirect()->route('jobs.index')->with('success', 'Poste supprimé avec succès !');
     }
 
 }
