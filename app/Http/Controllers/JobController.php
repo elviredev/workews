@@ -60,6 +60,14 @@ class JobController extends Controller
       // user ID codé en dur en attendant l'authentification
       $validatedData['user_id'] = 1;
 
+      // Vérifier s'il existe un fichier téléchargé
+      if ($request->hasFile('company_logo')) {
+        // Stocker le fichier et obtenir le path pour le sauvegarder en bdd (storage/app/public/logos)
+        $path = $request->file('company_logo')->store('logos', 'public');
+        // Ajouter le path aux données validées
+        $validatedData['company_logo'] = $path;
+      }
+
       // Submit to database
       Job::create($validatedData);
 

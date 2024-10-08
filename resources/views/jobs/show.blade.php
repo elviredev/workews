@@ -33,21 +33,25 @@
             <li class="mb-2">
               <strong>Lieu de Travail:</strong> {{ $job->city }}, {{ $job->state }}
             </li>
+            @if($job->tags)
             <li class="mb-2">
               <strong>Tags:</strong> {{ ucwords(str_replace(',', ', ', $job->tags)) }}
             </li>
+            @endif
           </ul>
         </div>
       </div>
 
       <div class="container mx-auto p-4">
-        <h2 class="text-xl font-semibold mb-4">Détails du Poste</h2>
-        <div class="rounded-lg shadow-md bg-white p-4">
-          <h3 class="text-lg font-semibold mb-2 text-blue-500">Formation</h3>
-          <p>{{ $job->requirements }}</p>
-          <h3 class="text-lg font-semibold mt-4 mb-2 text-blue-500">Avantages</h3>
-          <p>{{ $job->benefits }}</p>
-        </div>
+        @if($job->requirements || $job->benefits)
+          <h2 class="text-xl font-semibold mb-4">Détails du Poste</h2>
+          <div class="rounded-lg shadow-md bg-white p-4">
+            <h3 class="text-lg font-semibold mb-2 text-blue-500">Formation</h3>
+            <p>{{ $job->requirements }}</p>
+            <h3 class="text-lg font-semibold mt-4 mb-2 text-blue-500">Avantages</h3>
+            <p>{{ $job->benefits }}</p>
+          </div>
+        @endif
         <p class="my-5">Mettez "Candidature" comme sujet de votre email et joignez votre CV.</p>
         <a
           href="mailto:{{ $job->contact_email }}"
@@ -66,14 +70,20 @@
       <h3 class="text-xl text-center mb-4 font-bold">
         Info Entreprise
       </h3>
-      <img
-        src="/images/{{ $job->company_logo }}"
-        alt="Ad"
-        class="w-full rounded-lg mb-4 m-auto"
-      />
+      @if($job->company_logo)
+        <img
+          src="/storage/{{ $job->company_logo }}"
+          alt="Ad"
+          class="w-full rounded-lg mb-4 m-auto"
+        />
+      @endif
       <h4 class="text-lg font-bold">{{ $job->company_name }}</h4>
-      <p class="text-gray-700 text-lg my-3">{{ $job->company_description }}</p>
-      <a href="{{ $job->company_website }}" target="_blank" class="text-blue-500">Voir le Site</a>
+      @if($job->company_description)
+        <p class="text-gray-700 text-lg my-3">{{ $job->company_description }}</p>
+      @endif
+      @if($job->company_website)
+        <a href="{{ $job->company_website }}" target="_blank" class="text-blue-500">Voir le Site</a>
+      @endif
       <a
         href=""
         class="mt-10 bg-blue-500 hover:bg-blue-600 text-white font-bold w-full py-2 px-4 rounded-full flex items-center justify-center"
