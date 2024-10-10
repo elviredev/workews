@@ -6,6 +6,7 @@
           <a class="block p-4 text-blue-700" href="{{ route('jobs.index') }}">
             <i class="fa fa-arrow-alt-circle-left"></i> Retour aux annonces
           </a>
+          @can('update', $job)
           <div class="flex space-x-3 ml-4">
             <a href="{{ route('jobs.edit', $job->id) }}" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded">Modifier</a>
             <!-- Delete Form -->
@@ -22,6 +23,7 @@
             </form>
             <!-- End Delete Form -->
           </div>
+          @endcan
         </div>
         <div class="p-4">
           <h2 class="text-xl font-semibold">{{ $job->title }}</h2>
