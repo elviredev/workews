@@ -13,7 +13,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <title>{{ $title ?? 'Workews | Rechercher ou publier un emploi' }}</title>
 </head>
-<body class="bg-gray-100">
+<body class="bg-gray-50">
 <x-header />
 {{-- si on est sur la homepage uniquement --}}
 @if(request()->is('/'))
