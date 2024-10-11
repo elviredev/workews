@@ -163,6 +163,11 @@ class JobController extends Controller
     // Supprimer le poste
     $job->delete();
 
+    // Vérifiez si la requête provient de la page dashboard
+    if (request()->query('from') == 'dashboard') {
+      return redirect()->route('dashboard')->with('success', 'Poste supprimé avec succès !');
+    }
+
     return redirect()->route('jobs.index')->with('success', 'Poste supprimé avec succès !');
   }
 
