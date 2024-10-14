@@ -8,6 +8,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\BookmarkController;
+use App\Http\Controllers\CandidatController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -39,3 +40,10 @@ Route::middleware('auth')->group(function () {
   Route::delete('/bookmarks/{job}', [BookmarkController::class, 'destroy'])
     ->name('bookmarks.destroy');
 });
+
+Route::post('/jobs/{job}/postuler', [CandidatController::class, 'store'])
+  ->name('candidat.store')
+  ->middleware('auth');
+Route::delete('/candidats/{candidat}', [CandidatController::class, 'destroy'])
+  ->name('candidat.destroy')
+  ->middleware('auth');

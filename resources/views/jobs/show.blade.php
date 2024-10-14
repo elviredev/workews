@@ -1,5 +1,6 @@
 <x-layout>
   <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+    {{-- Infos Offre d'Emploi --}}
     <section class="md:col-span-3">
       <div class="rounded-lg shadow-md bg-white p-3">
         <div class="flex justify-between items-center">
@@ -60,20 +61,61 @@
             <p>{{ $job->benefits }}</p>
           </div>
         @endif
+
+        {{-- Partie Postulez Start --}}
+        @auth
         <p class="my-5">Mettez "Candidature" comme sujet de votre email et joignez votre CV.</p>
-        <a
-          href="mailto:{{ $job->contact_email }}"
-          class="block w-full text-center px-5 py-2.5 shadow-sm rounded border text-base font-medium cursor-pointer text-indigo-700 bg-indigo-100 hover:bg-indigo-200"
-        >
-          Postulez
-        </a>
+        <div x-data="{ open: false }">
+          <button
+            @click="open = true"
+            class="block w-full text-center px-5 py-2.5 shadow-sm rounded border text-base font-medium cursor-pointer text-indigo-700 bg-indigo-100 hover:bg-indigo-200"
+          >
+            Postulez maintenant
+          </button>
+          {{-- Modale --}}
+          <div
+            x-cloak
+            x-show="open"
+            class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50"
+          >
+            <div
+              @click.away="open = false"
+              class="bg-white p-6 rounded-lg shadow-md w-full max-w-md"
+            >
+              <h3 class="text-lg font-semibold mb-4">Postulez pour le poste : {{ $job->title }}</h3>
+              <form
+                method="POST"
+                action="{{ route('candidat.store', $job->id) }}"
+                enctype="multipart/form-data"
+              >
+                @csrf
+                <x-inputs.text id="full_name" name="full_name" label="Nom et prénom" :required="true" />
+                <x-inputs.text id="contact_phone" name="contact_phone" label="Téléphone" />
+                <x-inputs.text id="contact_email" name="contact_email" label="Email" :required="true" />
+                <x-inputs.text-area id="message" name="message" label="Message" />
+                <x-inputs.text id="location" name="location" label="Ville" />
+                <x-inputs.file id="resume" name="resume" label="Téléchargez votre CV (pdf)" :required="true" />
+
+                <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md">Soumettre Candidature</button>
+                <button @click="open = false" class="bg-gray-300 hover:bg-gray-400 text-black px-4 py-2 rounded-md">Annuler</button>
+              </form>
+            </div>
+          </div>
+        </div>
+        @else
+        <p class="my-5 bg-gray-200 rounded p-3">
+          <i class="fa fa-info-circle mr-3"></i> Vous devez être connecté pour postuler à cette offre d'emploi.
+        </p>
+        @endauth
+        {{-- Partie Postulez End --}}
       </div>
 
-      <div class="bg-white p-6 rounded-lg shadow-md mt-6">
+      <div class="bg-white p-6 rounded-xl shadow-md mt-6">
         <div id="map"></div>
       </div>
     </section>
 
+    {{-- Infos Entreprise  --}}
     <aside class="bg-white rounded-lg shadow-md p-3">
       <h3 class="text-xl text-center mb-4 font-bold">
         Info Entreprise

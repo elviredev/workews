@@ -18,8 +18,8 @@ class DashboardController extends Controller
     // Obtenir le user authentifié
     $user = Auth::user();
 
-    // Obtenir les annonces du user connecté
-    $jobs = Job::where('user_id', $user->id)->get();
+    // Obtenir les annonces du user connecté et les candidats ayant postulé avec la relation 'candidats'
+    $jobs = Job::where('user_id', $user->id)->with('candidats')->get();
 
     return view('dashboard.index', compact('user','jobs'));
   }

@@ -24,7 +24,7 @@
     @forelse($jobs as $job)
     <div class="flex justify-between items-center border-b-2 border-gray-200 py-2">
       <div>
-        <h3 class="text-lg md:text-xl font-semibold">{{ $job->title }}</h3>
+        <h3 class="text-blue-800 text-lg md:text-xl font-semibold">{{ $job->title }}</h3>
         <p class="text-gray-700">{{ $job->job_type }}</p>
       </div>
       <div class="flex space-x-3">
@@ -43,6 +43,49 @@
         </form>
         <!-- End Delete Form -->
       </div>
+    </div>
+    {{-- Candidats --}}
+    <div class="mt-4 bg-gray-100 p-2">
+      <h4 class="text-lg font-semibold mb-2">Candidats</h4>
+      @forelse($job->candidats as $candidat)
+        <div class="py-2">
+          <p class="text-gray-800">
+            <strong>Nom:</strong> {{ $candidat->full_name }}
+          </p>
+          <p class="text-gray-800">
+            <strong>Tél.:</strong> {{ $candidat->contact_phone }}
+          </p>
+          <p class="text-gray-800">
+            <strong>Email:</strong> {{ $candidat->contact_email }}
+          </p>
+          <p class="text-gray-800">
+            <strong>Message:</strong> {{ $candidat->message }}
+          </p>
+          <p class="test-gray-800 mt-2">
+            <a
+              href="{{ asset('storage/' . $candidat->resume_path) }}"
+              class="text-blue-500 text-sm hover:underline"
+              download
+            >
+              <i class="fas fa-download"></i> Télécharger CV
+            </a>
+          </p>
+          {{-- Supprimer Candidat --}}
+          <form
+            method="POST"
+            action="{{ route('candidat.destroy', $candidat->id) }}"
+            onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce candidat ?')"
+          >
+          @csrf
+          @method('DELETE')
+            <button type="submit" class="text-red-500 hover:text-red-700 text-sm">
+              <i class="fas fa-trash"></i> Supprimer le candidat
+            </button>
+          </form>
+        </div>
+      @empty
+        <p class="text-gray-700 mb-5">Pas de candidat(s) pour ce poste.</p>
+      @endforelse
     </div>
     @empty
     <p class="text-gray-700">Vous n'avez aucune offre d'emploi.</p>
