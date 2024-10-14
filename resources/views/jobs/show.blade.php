@@ -92,12 +92,34 @@
       @if($job->company_website)
         <a href="{{ $job->company_website }}" target="_blank" class="text-blue-500">Voir le Site</a>
       @endif
-      <a
-        href=""
-        class="mt-10 bg-blue-500 hover:bg-blue-600 text-white font-semibold w-full py-2 px-4 rounded-full flex items-center justify-center"
-      >
-        <i class="fas fa-bookmark mr-3"></i> Ajouter aux favoris
-      </a>
+      {{-- Bouton des Favoris --}}
+      @guest
+        <p class="mt-10 bg-gray-200 text-gray-700 font-semibold w-full py-2 px-4 rounded-full text-center">
+          <i class="fas fa-info-circle mr-3"></i> Vous devez être connecté pour ajouter
+          ce poste à vos favoris.
+        </p>
+      @else
+        <form
+          method="POST"
+          action="{{ auth()->user()->bookmarkedJobs()->where('job_id', $job->id)->exists() ?
+                     route('bookmarks.destroy', $job->id) :
+                     route('bookmarks.store', $job->id)
+                   }}"
+          class="mt-10"
+        >
+        @csrf
+          @if(auth()->user()->bookmarkedJobs()->where('job_id', $job->id)->exists())
+            @method('DELETE')
+            <button type="submit" class="bg-red-500 hover:bg-red-600 text-white font-bold w-full py-2 px-4 rounded-full flex items-center justify-center">
+              <i class="fas fa-bookmark mr-3"></i> Supprimer des favoris
+            </button>
+          @else
+            <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold w-full py-2 px-4 rounded-full flex items-center justify-center">
+              <i class="fas fa-bookmark mr-3"></i> Ajouter aux favoris
+            </button>
+          @endif
+        </form>
+      @endguest
     </aside>
   </div>
 </x-layout>

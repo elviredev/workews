@@ -3,12 +3,9 @@
     {{-- Form Infos Profil --}}
     <div class="bg-white p-8 rounded-lg shadow-md w-full">
       <h3 class="text-3xl text-center font-bold mb-4">Info Profil</h3>
-
-      @if($user->avatar)
-        <div class="mt-2 flex justify-center">
-          <img src="{{ asset('storage/' . $user->avatar) }}" alt="{{ $user->name }}" class="w-32 h-32 object-cover rounded-full">
-        </div>
-      @endif
+      <div class="mt-2 flex justify-center">
+        <x-avatar withClass="w-32" heightClass="h-32" />
+      </div>
 
       <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
         @csrf
