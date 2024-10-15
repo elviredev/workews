@@ -14,10 +14,11 @@
       @auth
         <x-nav-link url="/bookmarks" :active="request()->is('bookmarks')">Favoris</x-nav-link>
         <x-logout-button/>
-        <div class="flex items-center space-x-3">
+        <div class="flex items-center space-x-2">
           <a href="{{ route('dashboard') }}">
             <x-avatar />
           </a>
+          <span class="text-[11px] text-yellow-400 uppercase mt-1 font-extralight">{{ Auth::user()->name }}</span>
         </div>
         <x-button-link url="/jobs/create" icon="edit">Créer Job</x-button-link>
       @else

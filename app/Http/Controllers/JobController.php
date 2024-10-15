@@ -171,4 +171,44 @@ class JobController extends Controller
     return redirect()->route('jobs.index')->with('success', 'Poste supprimé avec succès !');
   }
 
+  /**
+   * @desc Search job listings
+   * @route GET /jobs/search
+   * @param Request $request
+   * @return View
+   */
+  public function search(Request $request): View
+  {
+    // Obtenir les données du formulaire
+    $keywords = strtolower($request->input('keywords'));
+    $location = strtolower($request->input('location'));
+
+    // Générateur de requêtes
+    $query = Job::query();
+
+    // Vérifier qu'on recherche réellement des mots-clés
+    if ($keywords) {
+      $query->where(function ($q) use ($keywords) {
+        // Faire correspondre $keywords à n'importe quoi dans le titre
+        $q->whereRaw('LOWER(title) like ?', ['%' . $keywords . '%'])
+          ->orWhereRaw('LOWER(description) like ?', ['%' . $keywords . '%'])
+          ->orWhereRaw('LOWER(tags) like ?', ['%' . $keywords . '%']);
+      });
+    }
+    // Vérifier qu'on recherche réellement un emplacement
+    if ($location) {
+      $query->where(function ($q) use ($location) {
+        // Faire correspondre $keywords à n'importe quoi dans le titre
+        $q->whereRaw('LOWER(address) like ?', ['%' . $location . '%'])
+          ->orWhereRaw('LOWER(city) like ?', ['%' . $location . '%'])
+          ->orWhereRaw('LOWER(state) like ?', ['%' . $location . '%'])
+          ->orWhereRaw('LOWER(zipcode) like ?', ['%' . $location . '%']);
+      });
+    }
+
+    $jobs = $query->paginate(12);
+
+    return view('jobs.index')->with('jobs', $jobs);
+  }
+
 }
