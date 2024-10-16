@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Candidat;
 use App\Models\Job;
+use App\Mail\JobApplied;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class CandidatController extends Controller
 {
@@ -50,6 +52,9 @@ class CandidatController extends Controller
     $candidature->job_id = $job->id;
     $candidature->user_id = auth()->id();
     $candidature->save();
+
+    // Send Email to owner
+    Mail::to($job->user->email)->send(new JobApplied($candidature, $job));
 
     return redirect()->back()->with('success', 'Votre candidature a été transmise!');
   }
