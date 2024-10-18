@@ -53,8 +53,8 @@ class CandidatController extends Controller
     $candidature->user_id = auth()->id();
     $candidature->save();
 
-    // Send Email to owner (decommenter après que mailtrap ait validé le form de conformité)
-    // Mail::to($job->user->email)->send(new JobApplied($candidature, $job));
+    // Send Email to owner (decommenter après que mailtrap ait validé le form de conformité pour la PROD)
+    Mail::to($job->user->email)->send(new JobApplied($candidature, $job));
 
     return redirect()->back()->with('success', 'Votre candidature a été transmise!');
   }
